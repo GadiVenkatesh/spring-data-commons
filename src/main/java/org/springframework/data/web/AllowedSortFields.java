@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * Restricts the properties that may be used to sort a request-bound {@link org.springframework.data.domain.Sort}
  * or {@link org.springframework.data.domain.Pageable} argument.
  *
- * @author
+ * @author Spring Data contributors
  * @since 4.2
  */
 @Target(ElementType.PARAMETER)
