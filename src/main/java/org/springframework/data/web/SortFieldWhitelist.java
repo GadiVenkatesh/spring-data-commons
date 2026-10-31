@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
 /**
  * Validates request-bound sort properties against an optional {@link AllowedSortFields} declaration.
  *
- * @author
+ * @author Spring Data contributors
  * @since 4.2
  */
 final class SortFieldWhitelist {
@@ -41,9 +41,10 @@ final class SortFieldWhitelist {
 			return sort;
 		}
 
-		Assert.noNullElements(annotation.value(), "Allowed sort fields must not contain null");
+		String[] configuredFields = annotation.value();
+		Assert.noNullElements(configuredFields, "Allowed sort fields must not contain null");
 
-		Set<String> allowed = Arrays.stream(annotation.value()).collect(Collectors.toUnmodifiableSet());
+		Set<String> allowed = Arrays.stream(configuredFields).collect(Collectors.toUnmodifiableSet());
 
 		for (Sort.Order order : sort) {
 			if (!allowed.contains(order.getProperty())) {
