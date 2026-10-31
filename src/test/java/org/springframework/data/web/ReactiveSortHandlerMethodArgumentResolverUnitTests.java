@@ -182,7 +182,6 @@ class ReactiveSortHandlerMethodArgumentResolverUnitTests {
 		assertThat(resolve(request, getParameterOfMethod("containeredDefault"))).isEqualTo(Sort.by("foo", "bar"));
 	}
 
-
 	@Test // GH-4178
 	void allowsSortPropertiesDeclaredInWhitelist() {
 		var parameter = getParameterOfMethod("allowedSortFields");
@@ -254,8 +253,6 @@ class ReactiveSortHandlerMethodArgumentResolverUnitTests {
 	interface Controller {
 
 		void supportedMethod(Sort sort);
-
-		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
 		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
