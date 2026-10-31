@@ -257,6 +257,8 @@ class ReactiveSortHandlerMethodArgumentResolverUnitTests {
 
 		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
+		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
+
 		void unsupportedMethod(String string);
 
 		void qualifiedSort(@Qualifier("qual") Sort sort);
