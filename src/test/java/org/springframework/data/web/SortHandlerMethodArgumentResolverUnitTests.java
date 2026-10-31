@@ -272,7 +272,6 @@ class SortHandlerMethodArgumentResolverUnitTests extends SortDefaultUnitTests {
 		assertSupportedAndResolvedTo(getRequestWithSort(reference, "merged"), parameter, reference);
 	}
 
-
 	@Test // GH-4178
 	void allowsSortPropertiesDeclaredInWhitelist() throws Exception {
 
@@ -374,8 +373,6 @@ class SortHandlerMethodArgumentResolverUnitTests extends SortDefaultUnitTests {
 	interface Controller {
 
 		void supportedMethod(Sort sort);
-
-		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
 		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
