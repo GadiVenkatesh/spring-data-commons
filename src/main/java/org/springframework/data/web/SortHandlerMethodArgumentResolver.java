@@ -57,18 +57,18 @@ public class SortHandlerMethodArgumentResolver extends SortHandlerMethodArgument
 
 		// No parameter
 		if (directionParameter == null) {
-			return getDefaultFromAnnotationOrFallback(parameter);
+			return SortFieldWhitelist.validate(parameter, getDefaultFromAnnotationOrFallback(parameter));
 		}
 
 		// Single empty parameter, e.g "sort="
 		if (directionParameter.length == 1 && !StringUtils.hasText(directionParameter[0])) {
-			return getDefaultFromAnnotationOrFallback(parameter);
+			return SortFieldWhitelist.validate(parameter, getDefaultFromAnnotationOrFallback(parameter));
 		}
 
 		var decoded = Arrays.stream(directionParameter)
 				.map(it -> UriUtils.decode(it, StandardCharsets.UTF_8))
 				.toList();
 
-		return parseParameterIntoSort(decoded, getPropertyDelimiter());
+		return SortFieldWhitelist.validate(parameter, parseParameterIntoSort(decoded, getPropertyDelimiter()));
 	}
 }
