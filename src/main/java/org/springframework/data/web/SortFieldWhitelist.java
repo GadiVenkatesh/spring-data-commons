@@ -37,14 +37,13 @@ final class SortFieldWhitelist {
 
 		AllowedSortFields annotation = parameter.getParameterAnnotation(AllowedSortFields.class);
 
-		if (annotation == null || !sort.isSorted()) {
+		if (annotation == null) {
 			return sort;
 		}
 
-		Set<String> allowed = Arrays.stream(annotation.value()).collect(Collectors.toUnmodifiableSet());
+		Assert.noNullElements(annotation.value(), "Allowed sort fields must not contain null");
 
-		Assert.noNullElements(annotation.value(), "Allowed sort fields must not contain null");
-		Assert.noNullElements(annotation.value(), "Allowed sort fields must not contain null");
+		Set<String> allowed = Arrays.stream(annotation.value()).collect(Collectors.toUnmodifiableSet());
 
 		for (Sort.Order order : sort) {
 			if (!allowed.contains(order.getProperty())) {
