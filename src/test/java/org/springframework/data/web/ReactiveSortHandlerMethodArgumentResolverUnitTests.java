@@ -182,6 +182,23 @@ class ReactiveSortHandlerMethodArgumentResolverUnitTests {
 		assertThat(resolve(request, getParameterOfMethod("containeredDefault"))).isEqualTo(Sort.by("foo", "bar"));
 	}
 
+
+	@Test // GH-4178
+	void allowsSortPropertiesDeclaredInWhitelist() {
+		var parameter = getParameterOfMethod("allowedSortFields");
+		var request = MockServerHttpRequest.get("foo?sort=name,ASC").build();
+		assertThat(resolve(request, parameter)).isEqualTo(Sort.by(ASC, "name"));
+	}
+
+	@Test // GH-4178
+	void rejectsSortPropertiesNotDeclaredInWhitelist() {
+		var parameter = getParameterOfMethod("allowedSortFields");
+		var request = MockServerHttpRequest.get("foo?sort=password,ASC").build();
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> resolve(request, parameter))
+				.withMessageContaining("password");
+	}
+
 	private static Sort resolve(MockServerHttpRequest request, MethodParameter parameter) {
 		return resolve(new ReactiveSortHandlerMethodArgumentResolver(), request, parameter);
 	}
@@ -237,6 +254,8 @@ class ReactiveSortHandlerMethodArgumentResolverUnitTests {
 	interface Controller {
 
 		void supportedMethod(Sort sort);
+
+		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
 		void unsupportedMethod(String string);
 
