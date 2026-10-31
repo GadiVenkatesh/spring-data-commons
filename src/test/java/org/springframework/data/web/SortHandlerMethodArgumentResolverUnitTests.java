@@ -272,6 +272,47 @@ class SortHandlerMethodArgumentResolverUnitTests extends SortDefaultUnitTests {
 		assertSupportedAndResolvedTo(getRequestWithSort(reference, "merged"), parameter, reference);
 	}
 
+	@Test // GH-4178
+	void allowsSortPropertiesDeclaredInWhitelist() throws Exception {
+
+		MethodParameter parameter = getParameterOfMethod("allowedSortFields");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("sort", "name,ASC");
+
+		assertThat(resolveSort(request, parameter)).isEqualTo(Sort.by(ASC, "name"));
+	}
+
+	@Test // GH-4178
+	void rejectsSortPropertiesNotDeclaredInWhitelist() throws Exception {
+
+		MethodParameter parameter = getParameterOfMethod("allowedSortFields");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("sort", "password,ASC");
+
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> resolveSort(request, parameter))
+				.withMessageContaining("password")
+				.withMessageContaining("name")
+				.withMessageContaining("status");
+	}
+
+	@Test // GH-4178
+	void validatesEveryRequestedSortPropertyAgainstWhitelist() throws Exception {
+
+		MethodParameter parameter = getParameterOfMethod("allowedSortFields");
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addParameter("sort", "name,status,DESC");
+
+		assertThat(resolveSort(request, parameter)).isEqualTo(Sort.by(DESC, "name", "status"));
+
+		request = new MockHttpServletRequest();
+		request.addParameter("sort", "name,password,DESC");
+		MockHttpServletRequest invalidRequest = request;
+
+		assertThatIllegalArgumentException()
+				.isThrownBy(() -> resolveSort(invalidRequest, parameter));
+	}
+
 	@Test
 	void readsEncodedSort() {
 
@@ -332,6 +373,8 @@ class SortHandlerMethodArgumentResolverUnitTests extends SortDefaultUnitTests {
 	interface Controller {
 
 		void supportedMethod(Sort sort);
+
+		void allowedSortFields(@AllowedSortFields({ "name", "status" }) Sort sort);
 
 		void unsupportedMethod(String string);
 

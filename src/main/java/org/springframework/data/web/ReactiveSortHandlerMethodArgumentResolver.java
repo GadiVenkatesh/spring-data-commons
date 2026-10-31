@@ -51,14 +51,14 @@ public class ReactiveSortHandlerMethodArgumentResolver extends SortHandlerMethod
 
 		// No parameter
 		if (directionParameter == null) {
-			return getDefaultFromAnnotationOrFallback(parameter);
+			return SortFieldWhitelist.validate(parameter, getDefaultFromAnnotationOrFallback(parameter));
 		}
 
 		// Single empty parameter, e.g "sort="
 		if (directionParameter.size() == 1 && !StringUtils.hasText(directionParameter.get(0))) {
-			return getDefaultFromAnnotationOrFallback(parameter);
+			return SortFieldWhitelist.validate(parameter, getDefaultFromAnnotationOrFallback(parameter));
 		}
 
-		return parseParameterIntoSort(directionParameter, getPropertyDelimiter());
+		return SortFieldWhitelist.validate(parameter, parseParameterIntoSort(directionParameter, getPropertyDelimiter()));
 	}
 }
