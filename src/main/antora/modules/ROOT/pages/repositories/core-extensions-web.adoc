@@ -112,6 +112,18 @@ The preceding method signature causes Spring MVC try to derive a `Pageable` inst
 `Sort.Order` instances resolved from request parameters are plain transfer objects carrying property names as is, without any validation against the domain model. Applications are responsible for verifying these values to prevent unintended sorting.
 ====
 
+You can restrict request-bound sort properties for an individual controller parameter by using `@AllowedSortFields`:
+
+[source,java]
+----
+@GetMapping("/tasks")
+Page<Task> getTasks(@AllowedSortFields({"createdAt", "name", "status"}) Pageable pageable) {
+    return taskService.findAll(pageable);
+}
+----
+
+Only the listed properties are accepted. If a request contains a sort property not included in the list, argument resolution fails with an `IllegalArgumentException` before the controller method is invoked. The annotation can also be applied to a `Sort` parameter. No whitelist is applied when the annotation is absent.
+
 To customize this behavior, register a bean that implements the `PageableHandlerMethodArgumentResolverCustomizer` interface or the `SortHandlerMethodArgumentResolverCustomizer` interface, respectively.
 Its `customize()` method gets called, letting you change settings, as the following example shows:
 
